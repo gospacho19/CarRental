@@ -1,43 +1,55 @@
-﻿using System.Text;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using LuxuryCarRental.ViewModels;
 using LuxuryCarRental.Views;
 
-namespace LuxuryCarRental;
-
-/// <summary>
-/// Interaction logic for MainWindow.xaml
-/// </summary>
-public partial class MainWindow : Window
+namespace LuxuryCarRental
 {
-    public MainWindow()
+    public partial class MainWindow : Window
     {
-        InitializeComponent();
+        private readonly IServiceProvider _sp;
 
-        NavTabs.SelectionChanged += (s, e) =>
+        // This is the only constructor. DI will call it.
+        public MainWindow(IServiceProvider sp, MainViewModel vm)
         {
-            switch (NavTabs.SelectedIndex)
-            {
-                case 0: ContentArea.Content = new CatalogView(); break;
-                case 1: ContentArea.Content = new CategoryView(); break;
-                case 2: ContentArea.Content = new CartView(); break;
-                case 3: ContentArea.Content = new CheckoutView(); break;
-                case 4: ContentArea.Content = new ConfirmationView(); break;
-                case 5: ContentArea.Content = new DealsView(); break;
-                default:
-                    ContentArea.Content = null;
-                    break;
-            }
-        };
+            _sp = sp ?? throw new ArgumentNullException(nameof(sp));
 
-        // show first tab by default
-        NavTabs.SelectedIndex = 0;
+            InitializeComponent();
+
+            // Bind the shell ViewModel
+            DataContext = vm ?? throw new ArgumentNullException(nameof(vm));
+
+            // Wire up tab‐selection to load the correct UserControl
+            NavTabs.SelectionChanged += OnTabChanged;
+
+            // Show first tab by default
+            NavTabs.SelectedIndex = 0;
+        }
+
+        private void OnTabChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Map tab index → View type
+            Type[] viewTypes = new[]
+            {
+                typeof(CatalogView),
+                typeof(CategoryView),
+                typeof(CartView),
+                typeof(CheckoutView),
+                typeof(ConfirmationView),
+                typeof(DealsView)
+            };
+
+            int idx = NavTabs.SelectedIndex;
+            if (idx < 0 || idx >= viewTypes.Length)
+            {
+                ContentArea.Content = null;
+                return;
+            }
+
+            // Resolve the UserControl from the container and display it
+            var view = _sp.GetService(viewTypes[idx]) as UserControl;
+            ContentArea.Content = view;
+        }
     }
 }

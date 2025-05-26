@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LuxuryCarRental.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +21,10 @@ namespace LuxuryCarRental.Views
     /// </summary>
     public partial class ConfirmationView : UserControl
     {
-        public ConfirmationView()
+        public ConfirmationView(ConfirmationViewModel vm)
         {
             InitializeComponent();
+            DataContext = vm;
         }
     }
 }

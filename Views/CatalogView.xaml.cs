@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using LuxuryCarRental.ViewModels;
 
 namespace LuxuryCarRental.Views
 {
@@ -20,9 +21,10 @@ namespace LuxuryCarRental.Views
     /// </summary>
     public partial class CatalogView : UserControl
     {
-        public CatalogView()
+        public CatalogView(CatalogViewModel vm)
         {
             InitializeComponent();
+            DataContext = vm;
         }
     }
 }
