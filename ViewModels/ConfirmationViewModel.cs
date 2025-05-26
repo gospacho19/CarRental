@@ -10,16 +10,13 @@ namespace LuxuryCarRental.ViewModels
 {
     public class ConfirmationViewModel : ObservableObject
     {
-        private string _message = string.Empty;
-        public string Message
-        {
-            get => _message;
-            set => SetProperty(ref _message, value);
-        }
+        // you could inject the ICheckoutHandler or the last rentals
+        public string Message { get; init; }
 
         public ConfirmationViewModel()
         {
-            Message = "Your booking has been confirmed!";
+            Message = "Thank you! Your booking is confirmed.";
         }
     }
+
 }

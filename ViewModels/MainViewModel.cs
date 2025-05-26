@@ -18,6 +18,7 @@ namespace LuxuryCarRental.ViewModels
 
         public IRelayCommand RefreshCommand { get; }
 
+
         private readonly IUnitOfWork _uow;
 
         public MainViewModel(IUnitOfWork uow)

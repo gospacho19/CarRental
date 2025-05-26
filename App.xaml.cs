@@ -7,6 +7,11 @@ using LuxuryCarRental.Repositories.Implementations;
 using LuxuryCarRental.Repositories.Interfaces;
 using LuxuryCarRental.ViewModels;
 using LuxuryCarRental.Views;
+using LuxuryCarRental.Services.Implementations;
+using LuxuryCarRental.Services.Interfaces;
+using LuxuryCarRental.Handlers.Interfaces;
+using LuxuryCarRental.Managers.Implementations;
+using LuxuryCarRental.Handlers.Implementations;
 
 namespace LuxuryCarRental
 {
@@ -45,6 +50,17 @@ namespace LuxuryCarRental
             services.AddTransient<ConfirmationView>();
             services.AddTransient<DealsView>();
             services.AddTransient<MainWindow>();
+
+            // Services
+            services.AddScoped<IPricingService, PricingService>();
+            services.AddScoped<IAvailabilityService, AvailabilityService>();
+            services.AddScoped<ICartService, CartService>();
+            services.AddScoped<IPaymentService, PaymentService>();
+
+            // Handlers
+            services.AddScoped<IRentalHandler, RentalHandler>();
+            services.AddScoped<IBasketHandler, BasketHandler>();
+            services.AddScoped<ICheckoutHandler, CheckoutHandler>();
 
             // 2) Build the provider
             _serviceProvider = services.BuildServiceProvider();

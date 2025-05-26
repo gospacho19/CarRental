@@ -9,18 +9,19 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LuxuryCarRental.Models;
 using LuxuryCarRental.Repositories.Interfaces;
+using LuxuryCarRental.Handlers.Interfaces;
 
 namespace LuxuryCarRental.ViewModels
 {
     public class DealsViewModel : ObservableObject
     {
-        private readonly IUnitOfWork _uow;
+        private readonly IRentalHandler _rentalHandler;
         public ObservableCollection<Rental> Rentals { get; } = new();
         public IRelayCommand RefreshCommand { get; }
 
-        public DealsViewModel(IUnitOfWork uow)
+        public DealsViewModel(IRentalHandler rentalHandler)
         {
-            _uow = uow;
+            _rentalHandler = rentalHandler;
             RefreshCommand = new RelayCommand(Refresh);
             Refresh();
         }
@@ -28,8 +29,9 @@ namespace LuxuryCarRental.ViewModels
         private void Refresh()
         {
             Rentals.Clear();
-            foreach (var r in _uow.Rentals.GetAll())
+            foreach (var r in _rentalHandler.GetAllDeals())
                 Rentals.Add(r);
         }
     }
+
 }
