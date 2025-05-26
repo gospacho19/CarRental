@@ -10,6 +10,7 @@ using LuxuryCarRental.Handlers.Interfaces;
 using LuxuryCarRental.Services.Interfaces;
 using CommunityToolkit.Mvvm.Messaging;
 using LuxuryCarRental.Messaging;
+using LuxuryCarRental.Models;
 
 
 namespace LuxuryCarRental.ViewModels
@@ -44,25 +45,41 @@ namespace LuxuryCarRental.ViewModels
 
         private void OnPay()
         {
-            // 1) Compute total for customer #1 (hard-coded for demo)
-            var total = _cart.GetCartTotal(1);
+            const int demoCustomerId = 1;
 
-            // 2) Charge the card — you can build a token string from the fields, or pass CardNumber directly
-            var paymentToken = $"{CardNumber}|{Expiry}|{Cvv}";
-            var transactionId = _payments.Charge(1, total, paymentToken);
+            // 1) Gather items & total
+            var items = _cart.GetCartItems(demoCustomerId);
+            var total = _cart.GetCartTotal(demoCustomerId);
 
-            // 3) Create the rentals
-            var rentals = _checkoutHandler.Checkout(1, transactionId);
+            // 2) Create card object
+            var expiryParts = Expiry.Split('/');
+            var card = new Card
+            {
+                CustomerId = demoCustomerId,
+                CardNumber = CardNumber,
+                ExpiryMonth = int.Parse(expiryParts[0]),
+                ExpiryYear = int.Parse(expiryParts[1]),
+                Cvv = Cvv
+            };
+            // Optionally persist the card:
+            // _cardService.AddCard(card);
 
-            // 4) Optionally clear the form
+            // 3) Charge via new signature
+            var transactionId = _payments.Charge(card, total);
+
+            // 4) Checkout handler
+            _checkoutHandler.Checkout(demoCustomerId, transactionId);
+
+            // 5) Navigate with full payload
+            _messenger.Send(new GoToConfirmationMessage(total, items, card));
+
+            // 6) Clear form
             CardNumber = Expiry = Cvv = string.Empty;
             OnPropertyChanged(nameof(CardNumber));
             OnPropertyChanged(nameof(Expiry));
             OnPropertyChanged(nameof(Cvv));
-
-            // 5) Navigate to the confirmation screen
-            _messenger.Send(new GoToConfirmationMessage());
         }
+
 
     }
 

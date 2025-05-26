@@ -18,5 +18,7 @@ namespace LuxuryCarRental.Models
 
         // nav
         public ICollection<Rental> Rentals { get; init; } = new List<Rental>();
+
+        public ICollection<Card> Cards { get; set; } = new List<Card>();
     }
 }

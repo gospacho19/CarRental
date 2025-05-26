@@ -25,6 +25,7 @@ namespace LuxuryCarRental.Data
         public DbSet<Rental> Rentals { get; set; }
         public DbSet<Basket> Baskets { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
+        public DbSet<Card> Cards { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LuxuryCarRental.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,23 @@ namespace LuxuryCarRental.Messaging
     /// Sent by CheckoutViewModel when payment is successful,
     /// to tell the shell to show the Confirmation view.
     /// </summary>
-    public class GoToConfirmationMessage { }
+    // Messaging/GoToConfirmationMessage.cs
+    public class GoToConfirmationMessage
+    {
+        public Money Total { get; }
+        public IEnumerable<CartItem> Items { get; }
+        public Card PaymentCard { get; }
+
+        public GoToConfirmationMessage(
+            Money total,
+            IEnumerable<CartItem> items,
+            Card paymentCard)
+        {
+            Total = total;
+            Items = items;
+            PaymentCard = paymentCard;
+        }
+    }
+
+
 }
