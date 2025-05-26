@@ -11,13 +11,19 @@
             <ColumnDefinition Width="770*"/>
             <ColumnDefinition Width="31*"/>
         </Grid.ColumnDefinitions>
-        <DockPanel Grid.ColumnSpan="2">
-            <Button Content="Refresh"
-              Command="{Binding RefreshCommand}"
-              DockPanel.Dock="Top"
-              Margin="5"/>
-            <DataGrid ItemsSource="{Binding Cars}" AutoGenerateColumns="True"
-                DockPanel.Dock="Bottom" Margin="5"/>
+        <DockPanel>
+            <!-- 1) Navigation Tabs -->
+            <TabControl x:Name="NavTabs" DockPanel.Dock="Top">
+                <TabItem Header="Catalog"/>
+                <TabItem Header="Categories"/>
+                <TabItem Header="Cart"/>
+                <TabItem Header="Checkout"/>
+                <TabItem Header="Confirm"/>
+                <TabItem Header="Deals"/>
+            </TabControl>
+
+            <!-- 2) Content area -->
+            <ContentControl x:Name="ContentArea"/>
         </DockPanel>
     </Grid>
 </Window>
