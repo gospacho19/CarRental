@@ -12,6 +12,7 @@ using LuxuryCarRental.Services.Interfaces;
 using LuxuryCarRental.Handlers.Interfaces;
 using LuxuryCarRental.Managers.Implementations;
 using LuxuryCarRental.Handlers.Implementations;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace LuxuryCarRental
 {
@@ -25,6 +26,8 @@ namespace LuxuryCarRental
 
             // 1) Configure services
             var services = new ServiceCollection();
+
+            services.AddSingleton<IMessenger, WeakReferenceMessenger>();
 
             // EF Core + SQLite
             services.AddDbContext<AppDbContext>(opts =>

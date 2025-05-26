@@ -9,30 +9,76 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LuxuryCarRental.Models;
 using LuxuryCarRental.Repositories.Interfaces;
+using CommunityToolkit.Mvvm.Messaging;
+using LuxuryCarRental.Messaging;
+
 
 namespace LuxuryCarRental.ViewModels
 {
     public class MainViewModel : ObservableObject
     {
-        public ObservableCollection<Car> Cars { get; } = new();
+        public CatalogViewModel CatalogVM { get; }
+        public CategoryViewModel CategoryVM { get; }
+        public CartViewModel CartVM { get; }
+        public CheckoutViewModel CheckoutVM { get; }
+        public ConfirmationViewModel ConfirmVM { get; }
+        public DealsViewModel DealsVM { get; }
 
-        public IRelayCommand RefreshCommand { get; }
+        private object _currentViewModel = default!;
 
-
-        private readonly IUnitOfWork _uow;
-
-        public MainViewModel(IUnitOfWork uow)
+        public object CurrentViewModel
         {
-            _uow = uow;
-            RefreshCommand = new RelayCommand(Refresh);
-            Refresh();
+            get => _currentViewModel;
+            set => SetProperty(ref _currentViewModel, value);
         }
 
-        private void Refresh()
+        public MainViewModel(
+            CatalogViewModel catalog,
+            CategoryViewModel category,
+            CartViewModel cart,
+            CheckoutViewModel checkout,
+            ConfirmationViewModel confirm,
+            DealsViewModel deals,
+            IMessenger messenger)
+
         {
-            Cars.Clear();
-            foreach (var car in _uow.Cars.GetAll())
-                Cars.Add(car);
+            CatalogVM = catalog;
+            CategoryVM = category;
+            CartVM = cart;
+            CheckoutVM = checkout;
+            ConfirmVM = confirm;
+            DealsVM = deals;
+            // inside the ctor, after you assign CatalogVM, etc.
+            messenger.Register<GoToConfirmationMessage>(this, (r, m) =>
+            {
+                // when received, switch to ConfirmVM
+                CurrentViewModel = ConfirmVM;
+            });
+
+
+            // existing commands:
+            ShowCatalogCmd = new RelayCommand(() => CurrentViewModel = CatalogVM);
+            ShowCategoryCmd = new RelayCommand(() => CurrentViewModel = CategoryVM);
+            ShowCartCmd = new RelayCommand(() => CurrentViewModel = CartVM);
+            ShowCheckoutCmd = new RelayCommand(() => CurrentViewModel = CheckoutVM);
+            ShowDealsCmd = new RelayCommand(() => CurrentViewModel = DealsVM);
+
+            // NEW: command to show confirmation
+            ShowConfirmationCmd = new RelayCommand(() => CurrentViewModel = ConfirmVM);
+
+            // start on Catalog
+            CurrentViewModel = CatalogVM;
         }
+
+        // existing command properties:
+        public IRelayCommand ShowCatalogCmd { get; }
+        public IRelayCommand ShowCategoryCmd { get; }
+        public IRelayCommand ShowCartCmd { get; }
+        public IRelayCommand ShowCheckoutCmd { get; }
+        public IRelayCommand ShowDealsCmd { get; }
+
+        // ← add this:
+        public IRelayCommand ShowConfirmationCmd { get; }
     }
+
 }
