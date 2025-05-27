@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace LuxuryCarRental.Models
 {
-    public enum VehicleStatus { Available, Rented, Maintenance }
-    public enum RentalStatus { Booked, Active, Completed, Cancelled }
+    public class Yacht : Vehicle
+    {
+        protected Yacht() { }
+    }
 }

@@ -9,6 +9,7 @@ namespace LuxuryCarRental.Repositories.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
+        IRepository<Vehicle> Vehicles { get; }
         IRepository<Car> Cars { get; }
         IRepository<LuxuryCar> LuxuryCars { get; }
         IRepository<Customer> Customers { get; }

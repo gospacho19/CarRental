@@ -28,7 +28,7 @@ namespace LuxuryCarRental.Handlers.Implementations
             foreach (var item in items)
             {
                 var period = new DateRange(item.StartDate, item.EndDate);
-                rentals.Add(_rentalHandler.BookCar(customerId, item.CarId, period, Enumerable.Empty<string>()));
+                rentals.Add(_rentalHandler.BookVehicle(customerId, item.VehicleId, period, Enumerable.Empty<string>()));
             }
             _cart.ClearCart(customerId);
             return rentals;

@@ -18,24 +18,24 @@ namespace LuxuryCarRental.Models
         public required int BasketId { get; init; }
         public required Basket Basket { get; init; }
 
-        public required int CarId { get; init; }
-        public required Car Car { get; init; }
+        public required int VehicleId { get; init; }
+        public required Vehicle Vehicle { get; init; }
 
         public required DateTime StartDate { get; init; }
         public required DateTime EndDate { get; init; }
 
-        public required decimal Subtotal { get; init; }
+        public required Money Subtotal { get; init; }
 
         [SetsRequiredMembers]
-        public CartItem(Basket basket, Car car, DateRange period, IEnumerable<string> options)
+        public CartItem(Basket basket, Vehicle vehicle, DateRange period, IEnumerable<string> options)
         {
             // 1) Link to basket
             BasketId = basket.Id;
             Basket = basket;
 
             // 2) Link to car
-            CarId = car.Id;
-            Car = car;
+            VehicleId = vehicle.Id;
+            Vehicle = vehicle;
 
             // 3) Dates
             StartDate = period.Start;
@@ -43,7 +43,7 @@ namespace LuxuryCarRental.Models
 
             // 4) Compute subtotal (example: daily rate × days)
             var days = period.Days;
-            Subtotal = car.DailyRate * days;
+            Subtotal = vehicle.DailyRate * days;
             // (You could integrate IPricingService here if you prefer.)
         }
     }

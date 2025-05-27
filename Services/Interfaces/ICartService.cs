@@ -11,7 +11,7 @@ namespace LuxuryCarRental.Services.Interfaces
 {
     public interface ICartService
     {
-        void AddToCart(int customerId, Car car, DateRange period, IEnumerable<string> options);
+        void AddToCart(int customerId, Vehicle vehicle, DateRange period, IEnumerable<string> options);
         void RemoveFromCart(int customerId, int cartItemId);
         IEnumerable<CartItem> GetCartItems(int customerId);
         Money GetCartTotal(int customerId);

@@ -11,7 +11,7 @@ namespace LuxuryCarRental.ViewModels
         private readonly IUnitOfWork _uow;
 
         public ObservableCollection<string> Categories { get; } = new();
-        public ObservableCollection<Car>    Cars       { get; } = new();
+        public ObservableCollection<Vehicle>    Vehicles       { get; } = new();
 
         // after — default to "All"
         private string _selectedCategory = "All";
@@ -44,9 +44,9 @@ namespace LuxuryCarRental.ViewModels
 
         private void Refresh()
         {
-            Cars.Clear();
-            foreach (var c in _uow.Cars.GetAll())
-                Cars.Add(c);
+            Vehicles.Clear();
+            foreach (var c in _uow.Vehicles.GetAll())
+                Vehicles.Add(c);
         }
 
     }

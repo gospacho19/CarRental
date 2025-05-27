@@ -24,27 +24,20 @@ namespace LuxuryCarRental.Services.Implementations
             _pricing = pricing;
         }
 
-        public void AddToCart(int customerId, Car car, DateRange period, IEnumerable<string> options)
+        // new – matches ICartService exactly
+        public void AddToCart(int customerId, Vehicle vehicle, DateRange period, IEnumerable<string> options)
         {
-            // a) Load customer for the Basket ctor
-            var customer = _ctx.Customers.Find(customerId)
-                         ?? throw new InvalidOperationException("Customer not found.");
-
-            // b) find or create Basket
+            // 1) Find or create the basket for this customer
             var basket = _ctx.Baskets
                 .Include(b => b.Items)
                 .FirstOrDefault(b => b.CustomerId == customerId)
-              ?? new Basket(customerId, customer);
+                         ?? throw new InvalidOperationException("Basket not found");
 
-            // c) create the CartItem
-            var item = new CartItem(
-                basket,
-                car,
-                period,
-                options ?? Array.Empty<string>()
-            );
+            // 2) Create the cart item and add it
+            var item = new CartItem(basket, vehicle, period, options);
+            _ctx.CartItems.Add(item);
 
-            basket.Items.Add(item);
+            // 3) Persist
             _ctx.SaveChanges();
         }
 
@@ -54,8 +47,11 @@ namespace LuxuryCarRental.Services.Implementations
 
         public Money GetCartTotal(int customerId)
         {
-            var total = GetCartItems(customerId).Sum(ci => ci.Subtotal);
-            return new Money(total, "USD");
+            var totalAmount = GetCartItems(customerId)
+                .Sum(ci => ci.Subtotal.Amount);   // <-- use Subtotal.Amount (decimal)
+
+            // 2) Wrap it into Money
+            return new Money(totalAmount, "USD");
         }
 
         public void RemoveFromCart(int customerId, int cartItemId)

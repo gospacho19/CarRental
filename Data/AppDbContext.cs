@@ -19,7 +19,10 @@ namespace LuxuryCarRental.Data
             : base(options) { }
 
         // DbSets for all your entities
+        public DbSet<Vehicle> Vehicles { get; set; }
         public DbSet<Car> Cars { get; set; }
+        public DbSet<Motorcycle> Motorcycles { get; set; }
+        public DbSet<Yacht> Yachts { get; set; }
         public DbSet<LuxuryCar> LuxuryCars { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Rental> Rentals { get; set; }
@@ -42,10 +45,23 @@ namespace LuxuryCarRental.Data
             modelBuilder.Entity<Customer>()
                 .OwnsOne(c => c.Contact);
 
-            // You can also configure indices, relationships, JSON fields, etc.
-            // e.g. index on Car.Make + Car.Model:
-            modelBuilder.Entity<Car>()
-                .HasIndex(c => new { c.Make, c.Model });
+            
+            // TPH inheritance:
+            modelBuilder.Entity<Vehicle>()
+                   .HasDiscriminator(v => v.VehicleType) 
+                   .HasValue<Car>(VehicleType.Car)
+                   .HasValue<Motorcycle>(VehicleType.Motorcycle)
+                   .HasValue<Yacht>(VehicleType.Yacht)
+                   .HasValue<LuxuryCar>(VehicleType.LuxuryCar);
+
+
+            modelBuilder.Entity<Vehicle>()
+                .OwnsOne(v => v.DailyRate, mb =>
+                {
+                    mb.Property(m => m.Amount).HasColumnName("DailyRate");
+                    mb.Property(m => m.Currency).HasColumnName("Currency");
+                });
+
         }
     }
 }

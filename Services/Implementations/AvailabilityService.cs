@@ -14,10 +14,13 @@ namespace LuxuryCarRental.Services.Implementations
         private readonly AppDbContext _ctx;
         public AvailabilityService(AppDbContext ctx) => _ctx = ctx;
 
-        public bool IsAvailable(int carId, DateRange period)
+        public bool IsAvailable(int vehicleId, DateRange period)
         {
+            var vehicle = _ctx.Set<Vehicle>().Find(vehicleId);
+            if (vehicle?.Status != VehicleStatus.Available) return false;
+
             return !_ctx.Rentals
-                .Where(r => r.CarId == carId && r.Status == RentalStatus.Active)
+                .Where(r => r.VehicleId == vehicleId && r.Status == RentalStatus.Active)
                 .Any(r => new DateRange(r.StartDate, r.EndDate).Overlaps(period));
         }
     }

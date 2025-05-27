@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace LuxuryCarRental.Models
 {
+    [Owned]
     public record Money(decimal Amount, string Currency)
     {
         public static Money operator +(Money a, Money b)

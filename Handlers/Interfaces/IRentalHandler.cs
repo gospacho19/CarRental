@@ -10,7 +10,7 @@ namespace LuxuryCarRental.Handlers.Interfaces
 {
     public interface IRentalHandler
     {
-        Rental BookCar(int customerId, int carId, DateRange period, IEnumerable<string> options);
+        Rental BookVehicle(int customerId, int VehicleId, DateRange period, IEnumerable<string> options);
         void StartRental(int rentalId);
         void CompleteRental(int rentalId);
         void CancelRental(int rentalId);

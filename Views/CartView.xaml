@@ -17,8 +17,8 @@
 
         <DataGrid Grid.Row="0" ItemsSource="{Binding Items}" AutoGenerateColumns="False" CanUserAddRows="False" IsReadOnly="True">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Car" Binding="{Binding Car.Make}" Width="*" />
-                <DataGridTextColumn Header="Model" Binding="{Binding Car.Model}" Width="*" />
+                <DataGridTextColumn Header="Vehicle" Binding="{Binding Vehicle.Make}" Width="*" />
+                <DataGridTextColumn Header="Model" Binding="{Binding Vehicle.Model}" Width="*" />
                 <DataGridTextColumn Header="Start" Binding="{Binding StartDate, StringFormat=d}" Width="Auto" />
                 <DataGridTextColumn Header="End" Binding="{Binding EndDate, StringFormat=d}" Width="Auto" />
                 <DataGridTextColumn Header="Subtotal" Binding="{Binding Subtotal, StringFormat=C}" Width="Auto" />

@@ -10,6 +10,6 @@ namespace LuxuryCarRental.Services.Interfaces
     public interface IAvailabilityService
     {
         /// <summary>Returns true if car is free over the given date range.</summary>
-        bool IsAvailable(int carId, DateRange period);
+        bool IsAvailable(int vehicleId, DateRange period);
     }
 }

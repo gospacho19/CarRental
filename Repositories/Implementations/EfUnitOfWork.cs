@@ -15,6 +15,9 @@ namespace LuxuryCarRental.Repositories.Implementations
         private readonly AppDbContext _ctx;
 
         // repositories
+        public IRepository<Vehicle> Vehicles { get; }
+        public IRepository<Motorcycle> Motorcycles { get; }
+        public IRepository<Yacht> Yachts { get; }
         public IRepository<Car> Cars { get; }
         public IRepository<LuxuryCar> LuxuryCars { get; }
         public IRepository<Customer> Customers { get; }
@@ -25,6 +28,9 @@ namespace LuxuryCarRental.Repositories.Implementations
         public EfUnitOfWork(AppDbContext ctx)
         {
             _ctx = ctx;
+            Vehicles = new GenericRepository<Vehicle>(ctx);
+            Motorcycles = new GenericRepository<Motorcycle>(ctx);
+            Yachts = new GenericRepository<Yacht>(ctx);
             Cars = new GenericRepository<Car>(ctx);
             LuxuryCars = new GenericRepository<LuxuryCar>(ctx);
             Customers = new GenericRepository<Customer>(ctx);

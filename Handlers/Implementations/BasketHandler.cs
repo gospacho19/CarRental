@@ -32,9 +32,9 @@ namespace LuxuryCarRental.Managers.Implementations
             {
                 var period = new DateRange(item.StartDate, item.EndDate);
                 rentals.Add(
-                    _rental.BookCar(
+                    _rental.BookVehicle(
                      customerId,
-                     item.CarId,
+                     item.VehicleId,
                      period,
                      Array.Empty<string>()   // <— returns an empty IEnumerable<string>
                  )

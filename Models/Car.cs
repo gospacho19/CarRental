@@ -6,15 +6,21 @@ using System.Threading.Tasks;
 
 namespace LuxuryCarRental.Models
 {
-    public class Car
+    public class Car : Vehicle
     {
-        protected Car() { }  
+        // EF needs this for materialization
+        protected Car() { }
 
-        public int Id { get; set; }
+        // Car-specific
         public required string Make { get; init; }
         public required string Model { get; init; }
         public required int Year { get; init; }
-        public required decimal DailyRate { get; init; }
-        public CarStatus Status { get; set; } = CarStatus.Available;
+
+        // Build a human-friendly Name from Make/Model/Year
+        public override string Name
+        {
+            get => $"{Year} {Make} {Model}";
+            set => base.Name = value;  // if you ever need to set it
+        }
     }
 }

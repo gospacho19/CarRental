@@ -10,11 +10,11 @@ namespace LuxuryCarRental.Services.Implementations
 {
     public class PricingService : IPricingService
     {
-        public Money CalculateTotal(Car car, DateRange period, IEnumerable<string> options)
+        public Money CalculateTotal(Vehicle vehicle, DateRange period, IEnumerable<string> options)
         {
             // Base cost = daily rate × days
             var days = period.Days;
-            var cost = new Money(car.DailyRate * days, "USD");
+            var cost = vehicle.DailyRate * period.Days;
 
             // Example: extra $200/day for chauffeur
             if (options?.Contains("Chauffeur", StringComparer.OrdinalIgnoreCase) == true)
