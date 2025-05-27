@@ -32,7 +32,12 @@
 
             <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
                 <TextBlock Text="CVV:" Width="120" VerticalAlignment="Center" />
-                <PasswordBox Width="100" />
+                <TextBox
+                      Text="{Binding Cvv, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      Width="100"
+                      Margin="0,4,0,4"
+                      MaxLength="4"
+                />    
             </StackPanel>
 
             <Button Content="Pay Now" Command="{Binding PayCommand}" Width="100" />

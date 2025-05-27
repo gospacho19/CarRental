@@ -21,10 +21,9 @@ namespace LuxuryCarRental.Views
     /// </summary>
     public partial class CategoryView : UserControl
     {
-        public CategoryView(CategoryViewModel vm)
+        public CategoryView()
         {
             InitializeComponent();
-            DataContext = vm;
         }
     }
 }

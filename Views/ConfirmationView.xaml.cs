@@ -21,10 +21,9 @@ namespace LuxuryCarRental.Views
     /// </summary>
     public partial class ConfirmationView : UserControl
     {
-        public ConfirmationView(ConfirmationViewModel vm)
+        public ConfirmationView()
         {
             InitializeComponent();
-            DataContext = vm;
         }
     }
 }

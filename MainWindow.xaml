@@ -3,27 +3,45 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:LuxuryCarRental"
+        xmlns:vm="clr-namespace:LuxuryCarRental.ViewModels"
+        xmlns:views="clr-namespace:LuxuryCarRental.Views"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="770*"/>
-            <ColumnDefinition Width="31*"/>
-        </Grid.ColumnDefinitions>
-        <DockPanel>
-            <!-- 1) Navigation Tabs -->
-            <TabControl x:Name="NavTabs" DockPanel.Dock="Top">
-                <TabItem Header="Catalog"/>
-                <TabItem Header="Categories"/>
-                <TabItem Header="Cart"/>
-                <TabItem Header="Checkout"/>
-                <TabItem Header="Confirm"/>
-                <TabItem Header="Deals"/>
-            </TabControl>
+        Title="Luxury Car Rental" Height="450" Width="800">
 
-            <!-- 2) Content area -->
-            <ContentControl x:Name="ContentArea"/>
-        </DockPanel>
-    </Grid>
+    <!-- 1) ViewModel→View mapping -->
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vm:CatalogViewModel}">
+            <views:CatalogView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:CategoryViewModel}">
+            <views:CategoryView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:CartViewModel}">
+            <views:CartView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:CheckoutViewModel}">
+            <views:CheckoutView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ConfirmationViewModel}">
+            <views:ConfirmationView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:DealsViewModel}">
+            <views:DealsView/>
+        </DataTemplate>
+    </Window.Resources>
+
+    <DockPanel>
+        <!-- 2) Navigation bar bound to your MainViewModel commands -->
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="5">
+            <Button Content="Catalog"     Command="{Binding ShowCatalogCmd}"     Margin="2"/>
+            <Button Content="Categories"  Command="{Binding ShowCategoryCmd}"    Margin="2"/>
+            <Button Content="Cart"        Command="{Binding ShowCartCmd}"        Margin="2"/>
+            <Button Content="Checkout"    Command="{Binding ShowCheckoutCmd}"    Margin="2"/>
+            <Button Content="Confirm"     Command="{Binding ShowConfirmationCmd}" Margin="2"/>
+            <Button Content="Deals"       Command="{Binding ShowDealsCmd}"       Margin="2"/>
+        </StackPanel>
+
+        <!-- 3) Content area: shows whichever VM is CurrentViewModel -->
+        <ContentControl Content="{Binding CurrentViewModel}" />
+    </DockPanel>
 </Window>

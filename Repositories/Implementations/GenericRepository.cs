@@ -20,7 +20,7 @@ namespace LuxuryCarRental.Repositories.Implementations
             _ctx = ctx;
             _db = ctx.Set<T>();
         }
-
+        
         public IEnumerable<T> GetAll() => _db.AsNoTracking().ToList();
         public T? GetById(int id) => _db.Find(id);
         public void Add(T entity) => _db.Add(entity);

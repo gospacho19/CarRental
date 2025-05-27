@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using LuxuryCarRental.Handlers.Interfaces;
-using LuxuryCarRental.Services.Interfaces;
 using CommunityToolkit.Mvvm.Messaging;
+using LuxuryCarRental.Handlers.Interfaces;
 using LuxuryCarRental.Messaging;
 using LuxuryCarRental.Models;
-
+using LuxuryCarRental.Services.Interfaces;
 
 namespace LuxuryCarRental.ViewModels
 {
-    public class CheckoutViewModel : ObservableObject
+    public partial class CheckoutViewModel : ObservableObject
     {
         private readonly ICartService _cart;
         private readonly IPaymentService _payments;
@@ -27,60 +21,73 @@ namespace LuxuryCarRental.ViewModels
             IPaymentService payments,
             ICheckoutHandler checkoutHandler,
             IMessenger messenger)
-
         {
             _cart = cart;
             _payments = payments;
             _checkoutHandler = checkoutHandler;
             _messenger = messenger;
-            PayCommand = new RelayCommand(OnPay);
+            PayCommand = new RelayCommand(OnPay, CanPay);
         }
 
         public IRelayCommand PayCommand { get; }
 
-        // bind textboxes to these properties
-        public string CardNumber { get; set; } = string.Empty;
-        public string Expiry { get; set; } = string.Empty;
-        public string Cvv { get; set; } = string.Empty;
+        // <– Generator will create public CardNumber/Expiry/Cvv properties for you
+        [ObservableProperty] private string cardNumber = string.Empty;
+        [ObservableProperty] private string expiry = string.Empty;
+        [ObservableProperty] private string cvv = string.Empty;
+
+        // <– these hooks run whenever the generator’s setters fire
+        partial void OnCardNumberChanged(string? oldValue, string newValue)
+            => PayCommand.NotifyCanExecuteChanged();
+
+        partial void OnExpiryChanged(string? oldValue, string newValue)
+            => PayCommand.NotifyCanExecuteChanged();
+
+        partial void OnCvvChanged(string? oldValue, string newValue)
+            => PayCommand.NotifyCanExecuteChanged();
+
+        private bool CanPay()
+        {
+            // Make sure we have non-empty values
+            if (string.IsNullOrWhiteSpace(CardNumber)) return false;
+            if (string.IsNullOrWhiteSpace(Expiry)) return false;
+            if (string.IsNullOrWhiteSpace(Cvv)) return false;
+
+            // Validate format
+            bool okExpiry = Regex.IsMatch(Expiry, @"^(0[1-9]|1[0-2])/[0-9]{2}$");
+            bool okCvv = Regex.IsMatch(Cvv, @"^\d{3,4}$");
+
+            return okExpiry && okCvv;
+        }
 
         private void OnPay()
         {
-            const int demoCustomerId = 1;
+            const int customerId = 1;
 
-            // 1) Gather items & total
-            var items = _cart.GetCartItems(demoCustomerId);
-            var total = _cart.GetCartTotal(demoCustomerId);
+            // Gather cart data
+            var items = _cart.GetCartItems(customerId);
+            var total = _cart.GetCartTotal(customerId);
 
-            // 2) Create card object
-            var expiryParts = Expiry.Split('/');
+            // Build Card object
+            var parts = Expiry.Split('/');
             var card = new Card
             {
-                CustomerId = demoCustomerId,
+                CustomerId = customerId,
                 CardNumber = CardNumber,
-                ExpiryMonth = int.Parse(expiryParts[0]),
-                ExpiryYear = int.Parse(expiryParts[1]),
+                ExpiryMonth = int.Parse(parts[0]),
+                ExpiryYear = 2000 + int.Parse(parts[1]),
                 Cvv = Cvv
             };
-            // Optionally persist the card:
-            // _cardService.AddCard(card);
 
-            // 3) Charge via new signature
+            // Charge & persist rentals
             var transactionId = _payments.Charge(card, total);
+            _checkoutHandler.Checkout(customerId, transactionId);
 
-            // 4) Checkout handler
-            _checkoutHandler.Checkout(demoCustomerId, transactionId);
-
-            // 5) Navigate with full payload
+            // Send payload to confirmation
             _messenger.Send(new GoToConfirmationMessage(total, items, card));
 
-            // 6) Clear form
-            CardNumber = Expiry = Cvv = string.Empty;
-            OnPropertyChanged(nameof(CardNumber));
-            OnPropertyChanged(nameof(Expiry));
-            OnPropertyChanged(nameof(Cvv));
+            // Clear fields
+            CardNumber = Expiry = Cvv = "";
         }
-
-
     }
-
 }

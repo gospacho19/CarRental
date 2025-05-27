@@ -21,10 +21,9 @@ namespace LuxuryCarRental.Views
     /// </summary>
     public partial class CheckoutView : UserControl
     {
-        public CheckoutView(CheckoutViewModel vm)
+        public CheckoutView()
         {
             InitializeComponent();
-            DataContext = vm;
         }
     }
 }

@@ -51,14 +51,15 @@ namespace LuxuryCarRental.ViewModels
             ConfirmVM = confirm;
             DealsVM = deals;
 
-            // 5) Wire messenger → initializing the ConfirmVM
+
+            // Cart → Checkout
+            messenger.Register<GoToCheckoutMessage>(this, (_, __) =>
+                CurrentViewModel = CheckoutVM);
+
+            // Checkout → Confirmation
             messenger.Register<GoToConfirmationMessage>(this, (r, msg) =>
             {
-                ConfirmVM.Initialize(
-                  msg.Total,
-                  msg.Items,
-                  msg.PaymentCard
-                );
+                ConfirmVM.Initialize(msg.Total, msg.Items, msg.PaymentCard);
                 CurrentViewModel = ConfirmVM;
             });
 
